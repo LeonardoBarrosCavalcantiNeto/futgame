@@ -1,0 +1,179 @@
+{
+  "formato": 1,
+  "nome": "Pack Mínimo de Teste",
+  "autor": "Leonardo",
+  "competicoes": [
+    { "nome": "Liga Alfa", "tipo": "LIGA", "nivel": 1 },
+    { "nome": "Liga Beta", "tipo": "LIGA", "nivel": 2 }
+  ],
+  "clubes": [
+    {
+      "nome": "Atlético Vale",
+      "sigla": "VAL",
+      "corPrimaria": "#c8102e",
+      "corSecundaria": "#ffffff",
+      "reputacao": 70,
+      "competicao": "Liga Alfa",
+      "jogadores": [
+        {
+          "nome": "Marcos Lima",
+          "dataNascimento": "1994-03-12",
+          "nacionalidade": "Brasil",
+          "posicao": "GOL",
+          "pe": "D",
+          "potencial": 74,
+          "atributos": {
+            "elasticidade": 72,
+            "manejo": 70,
+            "chute": 60,
+            "reflexos": 75,
+            "velocidadeGol": 55,
+            "posicionamento": 73
+          }
+        },
+        {
+          "nome": "Rafael Duarte",
+          "dataNascimento": "1999-07-21",
+          "nacionalidade": "Brasil",
+          "posicao": "ATA",
+          "pe": "D",
+          "potencial": 82,
+          "atributos": {
+            "ritmo": 78,
+            "finalizacao": 80,
+            "passe": 62,
+            "drible": 74,
+            "defesa": 28,
+            "fisico": 70
+          }
+        }
+      ]
+    },
+    {
+      "nome": "Real Serra",
+      "sigla": "SER",
+      "corPrimaria": "#0b3d91",
+      "corSecundaria": "#ffd100",
+      "reputacao": 65,
+      "competicao": "Liga Alfa",
+      "jogadores": [
+        {
+          "nome": "Tiago Barros",
+          "dataNascimento": "1996-11-02",
+          "nacionalidade": "Brasil",
+          "posicao": "GOL",
+          "pe": "D",
+          "potencial": 71,
+          "atributos": {
+            "elasticidade": 68,
+            "manejo": 69,
+            "chute": 58,
+            "reflexos": 72,
+            "velocidadeGol": 52,
+            "posicionamento": 70
+          }
+        },
+        {
+          "nome": "Lucas Menezes",
+          "dataNascimento": "2001-01-15",
+          "nacionalidade": "Brasil",
+          "posicao": "ATA",
+          "pe": "E",
+          "potencial": 85,
+          "atributos": {
+            "ritmo": 82,
+            "finalizacao": 74,
+            "passe": 65,
+            "drible": 79,
+            "defesa": 25,
+            "fisico": 66
+          }
+        }
+      ]
+    },
+    {
+      "nome": "Porto Azul",
+      "sigla": "PAZ",
+      "corPrimaria": "#00a3e0",
+      "corSecundaria": "#001f3f",
+      "reputacao": 45,
+      "competicao": "Liga Beta",
+      "jogadores": [
+        {
+          "nome": "André Coelho",
+          "dataNascimento": "1992-05-30",
+          "nacionalidade": "Brasil",
+          "posicao": "GOL",
+          "pe": "D",
+          "potencial": 66,
+          "atributos": {
+            "elasticidade": 64,
+            "manejo": 63,
+            "chute": 55,
+            "reflexos": 66,
+            "velocidadeGol": 50,
+            "posicionamento": 65
+          }
+        },
+        {
+          "nome": "Gabriel Torres",
+          "dataNascimento": "2003-09-08",
+          "nacionalidade": "Brasil",
+          "posicao": "ATA",
+          "pe": "D",
+          "potencial": 78,
+          "atributos": {
+            "ritmo": 74,
+            "finalizacao": 66,
+            "passe": 55,
+            "drible": 68,
+            "defesa": 22,
+            "fisico": 62
+          }
+        }
+      ]
+    },
+    {
+      "nome": "Unidos do Norte",
+      "sigla": "UNO",
+      "corPrimaria": "#1b5e20",
+      "corSecundaria": "#ffffff",
+      "reputacao": 40,
+      "competicao": "Liga Beta",
+      "jogadores": [
+        {
+          "nome": "Pedro Aragão",
+          "dataNascimento": "1997-02-19",
+          "nacionalidade": "Brasil",
+          "posicao": "GOL",
+          "pe": "D",
+          "potencial": 64,
+          "atributos": {
+            "elasticidade": 62,
+            "manejo": 60,
+            "chute": 54,
+            "reflexos": 64,
+            "velocidadeGol": 48,
+            "posicionamento": 63
+          }
+        },
+        {
+          "nome": "Diego Faria",
+          "dataNascimento": "1998-12-04",
+          "nacionalidade": "Brasil",
+          "posicao": "ATA",
+          "pe": "A",
+          "potencial": 70,
+          "atributos": {
+            "ritmo": 70,
+            "finalizacao": 68,
+            "passe": 58,
+            "drible": 64,
+            "defesa": 24,
+            "fisico": 67
+          }
+        }
+      ]
+    }
+  ]
+}
