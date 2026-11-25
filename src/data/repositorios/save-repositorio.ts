@@ -63,6 +63,20 @@ export const saveRepositorio = {
       [save.slot, save.nomeTreinador, save.clubeId, save.dataJogo, agora, agora, save.versaoSchema],
     );
   },
+  /** Save do slot ativo, ou null se o slot estiver vazio. */
+  async buscarDoSlotAtivo(): Promise<Save | null> {
+    const db = await getDb();
+    const linhas = await db.select<LinhaSave[]>("SELECT * FROM saves LIMIT 1");
+    return linhas[0] ? paraSave(linhas[0]) : null;
+  },
+
+  async atualizarDataJogo(dataJogo: string): Promise<void> {
+    const db = await getDb();
+    await db.execute("UPDATE saves SET data_jogo = $1, atualizado_em = $2", [
+      dataJogo,
+      new Date().toISOString(),
+    ]);
+  },
 
   /** Apaga todo o conteúdo do slot, deixando-o vazio. */
   async apagarSlot(slot: number): Promise<void> {
