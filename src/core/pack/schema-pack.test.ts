@@ -64,4 +64,15 @@ describe("packSchema", () => {
     const pack = Object.assign(criarPack(), { campoExtra: 1 });
     expect(packSchema.safeParse(pack).success).toBe(false);
   });
+  it("aceita salário e fim de contrato opcionais", () => {
+    const pack = criarPack();
+    Object.assign(pack.clubes[0].jogadores[0], { salario: 8000, fimContrato: "2029-06-30" });
+    expect(packSchema.safeParse(pack).success).toBe(true);
+  });
+
+  it("rejeita fim de contrato fora do formato", () => {
+    const pack = criarPack();
+    Object.assign(pack.clubes[0].jogadores[0], { fimContrato: "30/06/2029" });
+    expect(packSchema.safeParse(pack).success).toBe(false);
+  });
 });

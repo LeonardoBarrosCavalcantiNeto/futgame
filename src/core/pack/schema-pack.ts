@@ -29,6 +29,11 @@ const jogadorSchema = z
     posicao: z.enum(["GOL", "ZAG", "LD", "LE", "VOL", "MC", "MEI", "PON", "ATA"]),
     pe: z.enum(["D", "E", "A"]),
     potencial: nota,
+    salario: z.number().int().min(0).optional(),
+    fimContrato: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "use o formato AAAA-MM-DD")
+      .optional(),
     atributos: z.union([atributosLinha, atributosGoleiro]),
   })
   .superRefine((jogador, ctx) => {
