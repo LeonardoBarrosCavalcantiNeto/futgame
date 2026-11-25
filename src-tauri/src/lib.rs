@@ -21,6 +21,12 @@ pub fn run() {
             sql: include_str!("../migrations/002_clube_competicao.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "atributos_opcionais",
+            sql: include_str!("../migrations/003_atributos_opcionais.sql"),
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()
