@@ -19,5 +19,22 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  {
+    files: ["src/core/**/*.ts", "src/engine/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["react", "react-dom", "react/*", "@tauri-apps/*"],
+              message: "core e engine devem ser lógica pura.",
+            },
+            { group: ["**/ui/**"], message: "core e engine não podem importar de ui." },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
 );
