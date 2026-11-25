@@ -1,0 +1,1 @@
+ALTER TABLE clubes ADD COLUMN competicao_id INTEGER REFERENCES competicoes(id);
