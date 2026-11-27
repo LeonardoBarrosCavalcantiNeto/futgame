@@ -16,9 +16,11 @@ export function CampoCanvas({ jogadores = [] }: CampoCanvasProps) {
     if (!container || !canvas) return;
 
     const redesenhar = () => {
-      const largura = container.clientWidth;
-      if (largura === 0) return;
+      const larguraDisponivel = container.clientWidth;
+      const alturaDisponivel = container.clientHeight;
+      if (larguraDisponivel === 0 || alturaDisponivel === 0) return;
 
+      const largura = Math.min(larguraDisponivel, alturaDisponivel * PROPORCAO_CANVAS);
       const altura = largura / PROPORCAO_CANVAS;
       const densidade = window.devicePixelRatio || 1;
       canvas.width = Math.round(largura * densidade);
@@ -40,7 +42,16 @@ export function CampoCanvas({ jogadores = [] }: CampoCanvasProps) {
   }, [jogadores]);
 
   return (
-    <div ref={containerRef} style={{ width: "100%" }}>
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <canvas ref={canvasRef} style={{ display: "block" }} />
     </div>
   );

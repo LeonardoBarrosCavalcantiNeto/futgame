@@ -30,7 +30,7 @@ const JOGADORES_DEMO: JogadorNoCampo[] = [
 
 function App() {
   return (
-    <main style={{ maxWidth: 1100, margin: "0 auto", padding: 16 }}>
+    <main style={{ position: "fixed", inset: 0, padding: 16, boxSizing: "border-box" }}>
       <CampoCanvas jogadores={JOGADORES_DEMO} />
     </main>
   );
