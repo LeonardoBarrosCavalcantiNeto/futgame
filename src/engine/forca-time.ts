@@ -12,7 +12,7 @@ export interface ForcaTime {
 
 type Setor = keyof ForcaTime;
 
-function setorDaPosicao(posicao: Posicao): Setor {
+export function setorDaPosicao(posicao: Posicao): Setor {
   switch (posicao) {
     case "GOL":
       return "goleiro";
