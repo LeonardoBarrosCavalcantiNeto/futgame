@@ -1,4 +1,5 @@
 import { Aleatorio } from "../core/aleatorio";
+import { criarDisciplina, sortearFalta } from "./faltas";
 import { resolverFinalizacao } from "./finalizacao";
 import { calcularForca } from "./forca-time";
 import {
@@ -52,12 +53,25 @@ export function simularPartida(casa: Escalacao, fora: Escalacao, seed: number): 
     CASA: estatisticasVazias(),
     FORA: estatisticasVazias(),
   };
+  const disciplina = criarDisciplina();
 
   let estado = saidaDeBola("CASA", contexto);
 
   for (let tick = 0; tick < TICKS_POR_PARTIDA; tick++) {
     if (tick === TICKS_POR_PARTIDA / 2) {
       estado = saidaDeBola("FORA", contexto);
+    }
+
+    const ocorrencias = sortearFalta(estado, contexto, disciplina);
+    if (ocorrencias.length > 0) {
+      const faltoso = adversario(estado.posse);
+      for (const ocorrencia of ocorrencias) {
+        eventos.push(criarEvento(tick, faltoso, ocorrencia.tipo, ocorrencia.jogadorId));
+      }
+      estatisticas[faltoso].faltas += 1;
+      ticks.push({ tick, ...estado });
+      estatisticas[estado.posse].posseTicks += 1;
+      continue;
     }
 
     const resultadoTick = resolverTick(estado, contexto);
