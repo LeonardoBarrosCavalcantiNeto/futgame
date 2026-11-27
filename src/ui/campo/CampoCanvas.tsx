@@ -1,7 +1,12 @@
 import { useEffect, useRef } from "react";
 import { desenharCampo, PROPORCAO_CANVAS } from "./desenhar-campo";
+import { desenharJogadores, type JogadorNoCampo } from "./desenhar-jogadores";
 
-export function CampoCanvas() {
+interface CampoCanvasProps {
+  jogadores?: readonly JogadorNoCampo[];
+}
+
+export function CampoCanvas({ jogadores = [] }: CampoCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -25,13 +30,14 @@ export function CampoCanvas() {
       if (!ctx) return;
       ctx.setTransform(densidade, 0, 0, densidade, 0, 0);
       desenharCampo(ctx, largura);
+      desenharJogadores(ctx, largura, jogadores);
     };
 
     redesenhar();
     const observador = new ResizeObserver(redesenhar);
     observador.observe(container);
     return () => observador.disconnect();
-  }, []);
+  }, [jogadores]);
 
   return (
     <div ref={containerRef} style={{ width: "100%" }}>
