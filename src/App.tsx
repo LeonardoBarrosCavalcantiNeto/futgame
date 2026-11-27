@@ -1,37 +1,30 @@
-import { FORMACOES, posicaoBase } from "./engine/formacoes";
-import type { Formacao, Lado } from "./engine/tipos-partida";
-import { CampoCanvas } from "./ui/campo/CampoCanvas";
-import type { JogadorNoCampo } from "./ui/campo/desenhar-jogadores";
+import { escalar } from "./engine/auxiliares-teste";
+import { simularPartida } from "./engine/partida";
+import type { Escalacao } from "./engine/tipos-partida";
+import { PartidaCampo, type EstiloJogador } from "./ui/campo/PartidaCampo";
+import { criarReprodutor } from "./ui/campo/reprodutor";
 
-function montarTime(
-  formacao: Formacao,
-  lado: Lado,
-  idInicial: number,
-  corPrimaria: string,
-  corSecundaria: string,
-): JogadorNoCampo[] {
-  return FORMACOES[formacao].map((_, indice) => {
-    const ponto = posicaoBase(formacao, indice, lado);
-    return {
-      id: idInicial + indice,
-      numero: indice + 1,
-      x: ponto.x,
-      y: ponto.y,
-      corPrimaria,
-      corSecundaria,
-    };
-  });
+const casa = escalar(() => 74, 1, 0);
+const fora = escalar(() => 70, 2, 100);
+const resultado = simularPartida(casa, fora, 2026);
+const reprodutor = criarReprodutor(resultado, { CASA: casa, FORA: fora });
+
+function estilosDoTime(escalacao: Escalacao, primaria: string, secundaria: string) {
+  return escalacao.titulares.map((jogador, indice): [number, EstiloJogador] => [
+    jogador.id,
+    { numero: indice + 1, corPrimaria: primaria, corSecundaria: secundaria },
+  ]);
 }
 
-const JOGADORES_DEMO: JogadorNoCampo[] = [
-  ...montarTime("4-3-3", "CASA", 0, "#1d4ed8", "#ffffff"),
-  ...montarTime("4-4-2", "FORA", 100, "#dc2626", "#111827"),
-];
+const estilos = new Map<number, EstiloJogador>([
+  ...estilosDoTime(casa, "#1d4ed8", "#ffffff"),
+  ...estilosDoTime(fora, "#dc2626", "#111827"),
+]);
 
 function App() {
   return (
     <main style={{ position: "fixed", inset: 0, padding: 16, boxSizing: "border-box" }}>
-      <CampoCanvas jogadores={JOGADORES_DEMO} />
+      <PartidaCampo reprodutor={reprodutor} estilos={estilos} velocidade={4} />
     </main>
   );
 }
