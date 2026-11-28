@@ -2,9 +2,10 @@ import type { Aleatorio } from "../core/aleatorio";
 import type { Jogador } from "../core/modelos/jogador";
 import { FORMACOES } from "./formacoes";
 import { setorDaPosicao, type ForcaTime } from "./forca-time";
-import type { Escalacao, Lado, RegistroTick, Zona } from "./tipos-partida";
+import type { CausaPerda, Escalacao, Lado, RegistroTick, Zona } from "./tipos-partida";
 
-export type EstadoBola = Omit<RegistroTick, "tick">;
+/** Com quem está a bola, em que zona e quem a conduz (sem o lance do tick). */
+export type EstadoBola = Pick<RegistroTick, "posse" | "zona" | "jogadorComBolaId">;
 
 export interface ContextoTick {
   escalacoes: Record<Lado, Escalacao>;
@@ -16,6 +17,8 @@ export interface ResultadoTick {
   estado: EstadoBola;
   /** true quando o time com a bola chuta neste tick; o chutador é estado.jogadorComBolaId. */
   finalizacao: boolean;
+  /** Preenchida quando a bola trocou de time neste tick. */
+  causaPerda: CausaPerda | null;
 }
 
 /** Chance base de perder a bola em cada zona (time com a força igual à do rival). */
@@ -29,6 +32,13 @@ const ZONA_APOS_AVANCO: Record<Zona, Zona> = { DEFESA: "MEIO", MEIO: "ATAQUE", A
 /** Zona de quem recupera a bola, do ponto de vista dele. */
 const ZONA_APOS_PERDA: Record<Zona, Zona> = { DEFESA: "MEIO", MEIO: "MEIO", ATAQUE: "DEFESA" };
 
+/** Como a bola é perdida: parte de cada causa no total de perdas. */
+const CAUSAS_DA_PERDA: readonly (readonly [CausaPerda, number])[] = [
+  ["DESARME", 0.4],
+  ["PASSE_INTERCEPTADO", 0.4],
+  ["BOLA_FORA", 0.2],
+];
+
 const SETOR_DA_ZONA: Record<Zona, "defesa" | "meio" | "ataque"> = {
   DEFESA: "defesa",
   MEIO: "meio",
@@ -41,6 +51,16 @@ export function adversario(lado: Lado): Lado {
 
 function limitar(valor: number): number {
   return Math.min(1, Math.max(0, valor));
+}
+
+function sortearCausaDaPerda(aleatorio: Aleatorio): CausaPerda {
+  const sorteio = aleatorio.proximo();
+  let acumulado = 0;
+  for (const [causa, peso] of CAUSAS_DA_PERDA) {
+    acumulado += peso;
+    if (sorteio < acumulado) return causa;
+  }
+  return "BOLA_FORA";
 }
 
 /** Parte do duelo que fica com quem tem a bola (0 a 1). */
@@ -85,10 +105,12 @@ export function resolverTick(estado: EstadoBola, contexto: ContextoTick): Result
   let posse: Lado = atacante;
   let zona: Zona = estado.zona;
   let finalizacao = false;
+  let causaPerda: CausaPerda | null = null;
 
   if (aleatorio.chance(chancePerda)) {
     posse = defensor;
     zona = ZONA_APOS_PERDA[estado.zona];
+    causaPerda = sortearCausaDaPerda(aleatorio);
   } else if (aleatorio.chance(chanceAvanco)) {
     if (estado.zona === "ATAQUE") {
       finalizacao = true;
@@ -102,5 +124,6 @@ export function resolverTick(estado: EstadoBola, contexto: ContextoTick): Result
   return {
     estado: { posse, zona, jogadorComBolaId: portador.id },
     finalizacao,
+    causaPerda,
   };
 }

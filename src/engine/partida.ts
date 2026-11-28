@@ -16,6 +16,7 @@ import {
   type EstatisticasLado,
   type EventoPartida,
   type Lado,
+  type Lance,
   type RegistroTick,
   type ResultadoPartida,
   type TipoEvento,
@@ -69,52 +70,78 @@ export function simularPartida(casa: Escalacao, fora: Escalacao, seed: number): 
         eventos.push(criarEvento(tick, faltoso, ocorrencia.tipo, ocorrencia.jogadorId));
       }
       estatisticas[faltoso].faltas += 1;
-      ticks.push({ tick, ...estado });
+
+      const autorId = ocorrencias.find((o) => o.tipo === "FALTA")?.jogadorId ?? -1;
+      ticks.push({
+        tick,
+        ...estado,
+        lance: { tipo: "FALTA", autorId, vitimaId: estado.jogadorComBolaId },
+      });
       estatisticas[estado.posse].posseTicks += 1;
       continue;
     }
 
+    const inicio = estado;
     const resultadoTick = resolverTick(estado, contexto);
     estado = resultadoTick.estado;
-    ticks.push({ tick, ...estado });
     estatisticas[estado.posse].posseTicks += 1;
 
-    if (!resultadoTick.finalizacao) continue;
+    let lance: Lance;
 
-    const atacante = estado.posse;
-    const defensor = adversario(atacante);
-    const chutadorId = estado.jogadorComBolaId;
-    const goleiroId = contexto.escalacoes[defensor].titulares[0]?.id ?? null;
-    const chute = resolverFinalizacao(estado, contexto);
+    if (resultadoTick.finalizacao) {
+      const atacante = estado.posse;
+      const defensor = adversario(atacante);
+      const chutadorId = estado.jogadorComBolaId;
+      const goleiroId = contexto.escalacoes[defensor].titulares[0]?.id ?? null;
+      const chute = resolverFinalizacao(estado, contexto);
 
-    estatisticas[atacante].finalizacoes += 1;
-    if (chute.noAlvo) {
-      estatisticas[atacante].finalizacoesNoAlvo += 1;
+      estatisticas[atacante].finalizacoes += 1;
+      if (chute.noAlvo) {
+        estatisticas[atacante].finalizacoesNoAlvo += 1;
+      }
+
+      switch (chute.resultado) {
+        case "GOL":
+          if (atacante === "CASA") {
+            placar.casa += 1;
+          } else {
+            placar.fora += 1;
+          }
+          eventos.push(criarEvento(tick, atacante, "GOL", chutadorId));
+          break;
+        case "DEFESA":
+          eventos.push(criarEvento(tick, defensor, "DEFESA_GOLEIRO", goleiroId));
+          break;
+        case "ESCANTEIO":
+          eventos.push(criarEvento(tick, defensor, "DEFESA_GOLEIRO", goleiroId));
+          eventos.push(criarEvento(tick, atacante, "ESCANTEIO", null));
+          estatisticas[atacante].escanteios += 1;
+          break;
+        case "PARA_FORA":
+          eventos.push(criarEvento(tick, atacante, "CHUTE_PARA_FORA", chutadorId));
+          break;
+      }
+
+      lance = {
+        tipo: "CHUTE",
+        passadorId: inicio.jogadorComBolaId,
+        chutadorId,
+        goleiroId,
+        resultado: chute.resultado,
+      };
+      estado = chute.estado;
+    } else if (resultadoTick.causaPerda) {
+      lance = {
+        tipo: "PERDA",
+        causa: resultadoTick.causaPerda,
+        perdedorId: inicio.jogadorComBolaId,
+        zonaOrigem: inicio.zona,
+      };
+    } else {
+      lance = { tipo: "PASSE", passadorId: inicio.jogadorComBolaId, zonaOrigem: inicio.zona };
     }
 
-    switch (chute.resultado) {
-      case "GOL":
-        if (atacante === "CASA") {
-          placar.casa += 1;
-        } else {
-          placar.fora += 1;
-        }
-        eventos.push(criarEvento(tick, atacante, "GOL", chutadorId));
-        break;
-      case "DEFESA":
-        eventos.push(criarEvento(tick, defensor, "DEFESA_GOLEIRO", goleiroId));
-        break;
-      case "ESCANTEIO":
-        eventos.push(criarEvento(tick, defensor, "DEFESA_GOLEIRO", goleiroId));
-        eventos.push(criarEvento(tick, atacante, "ESCANTEIO", null));
-        estatisticas[atacante].escanteios += 1;
-        break;
-      case "PARA_FORA":
-        eventos.push(criarEvento(tick, atacante, "CHUTE_PARA_FORA", chutadorId));
-        break;
-    }
-
-    estado = chute.estado;
+    ticks.push({ tick, ...estado, lance });
   }
 
   return { placar, eventos, ticks, estatisticas };

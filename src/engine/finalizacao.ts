@@ -1,8 +1,6 @@
 import { ehGoleiro, type Jogador } from "../core/modelos/jogador";
 import { adversario, sortearPortador, type ContextoTick, type EstadoBola } from "./tick";
-import type { Zona } from "./tipos-partida";
-
-export type ResultadoChute = "GOL" | "DEFESA" | "ESCANTEIO" | "PARA_FORA";
+import type { ResultadoChute, Zona } from "./tipos-partida";
 
 export interface ResultadoFinalizacao {
   resultado: ResultadoChute;

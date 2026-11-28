@@ -40,11 +40,30 @@ export interface EventoPartida {
   jogadorId: number | null;
 }
 
+export type ResultadoChute = "GOL" | "DEFESA" | "ESCANTEIO" | "PARA_FORA";
+
+export type CausaPerda = "DESARME" | "PASSE_INTERCEPTADO" | "BOLA_FORA";
+
+/** O que aconteceu em um tick, para a tela encenar o lance. */
+export type Lance =
+  | { tipo: "PASSE"; passadorId: number; zonaOrigem: Zona }
+  | { tipo: "PERDA"; causa: CausaPerda; perdedorId: number; zonaOrigem: Zona }
+  | {
+      tipo: "CHUTE";
+      passadorId: number;
+      chutadorId: number;
+      goleiroId: number | null;
+      resultado: ResultadoChute;
+    }
+  | { tipo: "FALTA"; autorId: number; vitimaId: number };
+
+/** Situação no fim do tick: com quem fica a bola, em que zona, e o lance que levou até aqui. */
 export interface RegistroTick {
   tick: number;
   posse: Lado;
   zona: Zona;
   jogadorComBolaId: number;
+  lance: Lance;
 }
 
 export interface Placar {
