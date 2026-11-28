@@ -1,13 +1,13 @@
 import { escalar } from "./engine/auxiliares-teste";
+import { criarCena } from "./engine/cena";
 import { simularPartida } from "./engine/partida";
 import type { Escalacao } from "./engine/tipos-partida";
 import { PartidaCampo, type EstiloJogador } from "./ui/campo/PartidaCampo";
-import { criarReprodutor } from "./ui/campo/reprodutor";
 
 const casa = escalar(() => 74, 1, 0);
 const fora = escalar(() => 70, 2, 100);
 const resultado = simularPartida(casa, fora, 2026);
-const reprodutor = criarReprodutor(resultado, { CASA: casa, FORA: fora });
+const cena = criarCena(resultado, { CASA: casa, FORA: fora });
 
 function estilosDoTime(escalacao: Escalacao, primaria: string, secundaria: string) {
   return escalacao.titulares.map((jogador, indice): [number, EstiloJogador] => [
@@ -24,7 +24,7 @@ const estilos = new Map<number, EstiloJogador>([
 function App() {
   return (
     <main style={{ position: "fixed", inset: 0, padding: 16, boxSizing: "border-box" }}>
-      <PartidaCampo reprodutor={reprodutor} estilos={estilos} velocidade={4} />
+      <PartidaCampo reprodutor={cena} estilos={estilos} velocidade={4} />
     </main>
   );
 }
